@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 app = Flask(__name__)
@@ -22,17 +22,32 @@ def hello_world():
         print("post done")
         title = request.form['title']
         desc = request.form['desc']
-        todo = Todo(title=title, desc=desc)
-        db.session.add(todo)
-        db.session.commit()
+        if title and desc:
+            todo = Todo(title=title, desc=desc)
+            db.session.add(todo)
+            db.session.commit()
     allTodo = Todo.query.all()
-    return render_template("index.html", allTodo=allTodo)
+    return render_template("index.html", allTodo = allTodo)
 
 @app.route('/products')
 def products():
     allTodo = Todo.query.all()
     # print(allTodo)
     return "this is product page"
+
+@app.route('/delete/<int:sno>', methods=['DELETE'])
+def delete(sno):
+    todo = Todo.query.get(sno)
+    db.session.delete(todo) 
+    db.session.commit()
+    print("data deleted")
+    return redirect("/")
+
+@app.route('/update/<int:sno>', methods=['PUT'])
+def update(sno):
+    todo = Todo.query.get(sno)
+    return render_template('update.html', todo = todo)
+    
 
 if __name__ == '__main__':
     app.run(debug=True, port=3000)
