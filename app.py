@@ -16,6 +16,9 @@ class Todo(db.Model):
         return f"{self.sno} - {self.title}"
 
 
+
+
+
 @app.route('/', methods=['GET', 'POST'])
 def hello_world():
     if request.method == 'POST':
@@ -48,6 +51,10 @@ def delete(sno):
     print("data deleted")
     return redirect("/")
 
+
+
+
+
 @app.route('/update/<int:sno>', methods=['PUT'])
 def update(sno):
     todo = Todo.query.get(sno)
@@ -61,6 +68,10 @@ def update(sno):
     db.session.commit()
     return render_template('update.html', todo = todo)
     
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
