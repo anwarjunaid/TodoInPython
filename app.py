@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 app = Flask(__name__)
@@ -27,6 +27,11 @@ def hello_world():
             db.session.add(todo)
             db.session.commit()
     allTodo = Todo.query.all()
+    # return jsonify({
+    #     "sno": allTodo.sno,
+    #     "title": allTodo.title,
+    #     "desc": allTodo.desc
+    # })
     return render_template("index.html", allTodo = allTodo)
 
 @app.route('/products')
@@ -46,8 +51,16 @@ def delete(sno):
 @app.route('/update/<int:sno>', methods=['PUT'])
 def update(sno):
     todo = Todo.query.get(sno)
+    print(todo)
+    data = request.get_json()   # Parse JSON data from the request
+    print(data)
+    if 'title' in data:
+        todo.title = data['title']
+    if 'desc' in data:
+        todo.desc = data['desc']
+    db.session.commit()
     return render_template('update.html', todo = todo)
     
 
 if __name__ == '__main__':
-    app.run(debug=True, port=3000)
+    app.run(debug=True, port=5000)
