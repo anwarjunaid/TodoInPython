@@ -46,32 +46,35 @@ def products():
 @app.route('/delete/<int:sno>', methods=['DELETE'])
 def delete(sno):
     todo = Todo.query.get(sno)
-    db.session.delete(todo) 
+    if not todo:
+        return jsonify({"error": "Todo not found"}), 404
+    db.session.delete(todo)
     db.session.commit()
     print("data deleted")
-    return redirect("/")
+    return jsonify({"message": "Todo deleted successfully"})
 
 
 
 
 
-@app.route('/update/<int:sno>', methods=['PUT'])
+
+@app.route('/update/<int:sno>', methods=['GET', 'PUT'])
 def update(sno):
-    todo = Todo.query.get(sno)
-    print(todo)
-    data = request.get_json()   # Parse JSON data from the request
-    print(data)
-    if 'title' in data:
-        todo.title = data['title']
-    if 'desc' in data:
-        todo.desc = data['desc']
-    db.session.commit()
-    return render_template('update.html', todo = todo)
+    if request.method == 'PUT':
+        todo = Todo.query.get(sno)
+        print(todo)
+        data = request.get_json()   # Parse JSON data from the request
+        print(data)
+        if 'title' in data:
+            todo.title = data['title']
+        if 'desc' in data:
+            todo.desc = data['desc']
+        db.session.commit()
+        return redirect("/")
     
+    todo = Todo.query.get(sno)
+    return render_template('update.html', todo = todo)
 
-
-
-
-
+    
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

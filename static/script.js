@@ -1,5 +1,64 @@
-function deleteTodo(event) {
-    event.preventDefault();
-    console.log("done")
+function deleteTodo(sno) {
+    fetch(`/delete/${sno}`, {
+        method: 'DELETE',
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Success:', data);
+        // Optionally, refresh the list of todos or update the UI as needed
+        const todoRow = document.querySelector(`#todo-${sno}`);
+        if (todoRow) {
+            todoRow.remove();
+        } else {
+            console.error(`Todo with sno ${sno} not found in DOM`);
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
 }
-console.warn("Junaid testing");
+
+function updateTodo(sno){
+    console.log("hua bhai")
+    document.getElementById('updateForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const title = document.getElementById('title').value;
+        const desc = document.getElementById('desc').value;
+        const newData = {
+            title: title,
+            desc: desc,
+        };
+    
+        updateTodo2(sno, newData);
+    });
+}
+
+function updateTodo2(sno, newData) {
+    fetch(`/update/${sno}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newData),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Todo updated successfully:', data);
+        // Optionally, update the UI or perform any other action upon successful update
+    })
+    .catch(error => {
+        console.error('Error updating todo:', error);
+    });
+}
+

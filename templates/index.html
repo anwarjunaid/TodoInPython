@@ -31,7 +31,7 @@
         </thead>
         <tbody>
             {% for todo in allTodo %}
-            <tr>
+            <tr id="todo-{{todo.sno}}">
                 <th>{{loop.index}}</th>
                 <td>{{todo.title}}</td>
                 <td>{{todo.desc}}</td>
@@ -39,7 +39,7 @@
                 <td>
                     <a href="/update/{{todo.sno}}"><button type="button"
                             class="btn btn-sm btn-outline-dark mx-2">Update</button></a>
-                    <a onclick="deleteTodo(event)"><button type="button"
+                    <a onclick="deleteTodo(`{{todo.sno}}`)"><button type="button"
                             class="btn btn-sm btn-outline-dark">Delete</button></a>
 
                 </td>
@@ -49,5 +49,5 @@
         </tbody>
     </table>
 </div>
-<script src="/home/junaid/python/flaskapp/templates/script.js"></script>
+
 {% endblock body %}
